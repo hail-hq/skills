@@ -31,6 +31,14 @@ this repository, and open linked PRs. Do not edit the generated skill directly.
 The export includes the neutral skill without signup attribution. The website
 serves its own local generator and does not fetch this repository at runtime.
 
+Platform changes require a skill review; matching copies alone do not prove
+that the instructions are current. The website repository has the maintenance
+and deployment runbook, a read-only OpenAPI example checker, and weekly checks
+against the deployed API and both published copies. These checks report drift;
+they do not rewrite or publish instructions automatically. Installed skills
+are snapshots and must be updated through the client's installer or downloaded
+again. A GitHub update does not by itself confirm a Tessl registry refresh.
+
 ## Tessl
 
 Submit `https://github.com/hail-hq/skills` through
