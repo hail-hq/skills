@@ -1,8 +1,8 @@
 # Give your AI assistant a phone number and an email inbox
 
 Get phone numbers in **120+ countries** and an email inbox for your AI assistant.
-Let it answer calls, texts, and email. Building an app? Add AI calls, email, and
-SMS with one API.
+Call, text, and email in both directions. Building an app? Add AI calls, email,
+and SMS with one API.
 
 This repository contains the official [Hail skill](skills/hail/SKILL.md) for AI
 assistants and coding agents. It guides an assistant through connecting to Hail,

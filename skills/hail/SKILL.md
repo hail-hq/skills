@@ -9,8 +9,8 @@ metadata:
 # Give your AI assistant a phone number and an email inbox
 
 Get phone numbers in 120+ countries and an email inbox for your AI assistant.
-Let it answer calls, texts, and email. Building an app? Add AI calls, email, and
-SMS with one API.
+Call, text, and email in both directions. Building an app? Add AI calls, email,
+and SMS with one API.
 
 Use this skill to set up a number or inbox, answer incoming calls, texts, and
 email, send messages, and read conversations and delivery events.
