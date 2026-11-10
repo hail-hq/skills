@@ -37,6 +37,10 @@ Choose the connection that fits the task:
 When MCP is connected, use its tools for the operations below. The REST examples
 are an alternative for API-based workflows; do not ask for an API key to perform
 an operation already available through the authorized MCP connection.
+Use the connected server's tool signatures for each call. If a listed tool or
+field is absent, refresh the connection and check again. Use a supported API or
+CLI operation instead; incoming email can also be handled through the existing
+email-reading tools and webhooks.
 
 | Task | MCP tools |
 | --- | --- |
