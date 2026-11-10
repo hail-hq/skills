@@ -1,6 +1,6 @@
 ---
 name: hail
-description: Give your AI assistant a phone number and an email inbox. Use Hail to make and answer calls, send and receive texts, and manage email through one API.
+description: Give your AI assistant a phone number and an email inbox. Find numbers in 120+ countries, submit carrier registrations, build call and text agents, and manage calls, texts, and email through MCP or the API.
 metadata:
   openclaw:
     primaryEnv: HAIL_API_KEY
@@ -15,6 +15,10 @@ Use this skill to set up a number or inbox, connect incoming calls and texts to
 an agent, send messages, and read conversations and delivery events.
 Hail provides the communication channels. Your assistant or application decides
 what to do with incoming email; a saved Hail agent can answer calls and texts.
+Through MCP, an assistant can quote and buy numbers, handle required registration
+including US A2P 10DLC, create a Hail agent, and route calls and texts to it.
+For an application that handles events itself, connect signed webhooks through
+the REST API or CLI.
 
 ## 1. Connect to Hail
 
@@ -26,6 +30,57 @@ Choose the connection that fits the task:
 - **REST API:** use `https://api.hail.so/v1` with a `HAIL_API_KEY`. The examples below
   cover this path. Get an existing account's key at https://hail.so/console/keys.
 - **CLI:** install with `brew install hail-hq/tap/hail`. See https://hail.so/docs/cli.
+
+### Set up through MCP
+
+When MCP is connected, use its tools for the operations below. The REST examples
+are an alternative for API-based workflows; do not ask for an API key to perform
+an operation already available through the authorized MCP connection.
+
+| Task | MCP tools |
+| --- | --- |
+| Find and provision a number | `quote_numbers`, `acquire_number`, `list_numbers`, `get_number` |
+| Discover and check registration requirements | `get_verification_requirements`, `check_verification` |
+| Submit documents and track carrier review | `create_file_upload`, `submit_verification`, `list_verifications`, `get_verification` |
+| Preview, confirm, or correct US SMS registration | `preview_sms_application`, `confirm_verification`, `get_sms_application`, `amend_sms_application` |
+| Build and connect a Hail agent | `create_agent`, `update_agent`, `route_number` |
+| Call, text, and email | `place_call`, `send_sms`, `send_email` |
+| Read conversations, transcripts, and delivery | `list_calls`, `list_sms`, `list_emails`, `get_email`, `get_events`, `get_email_events`, `get_email_stats` |
+| Work with contacts and files | `lookup_contact`, `create_contact`, `list_contacts`, `create_file_upload`, `get_email_attachment` |
+
+Hail offers numbers in 120+ countries. Use live `quote_numbers` results
+to check availability, voice/SMS capabilities, costs, and applicant requirements.
+An offer marked `by_request=true` needs a manual support order; it cannot be
+bought automatically. Coverage does not guarantee every number type or channel
+in every country.
+
+For number registration, get the requirements for the selected `quote_id` and
+the actual applicant's `subject_type`. Collect the required user-supplied details,
+address, and documents. Check the form before filing. Submit only with the
+applicant's authorization, then follow the registration's reported next step.
+Carrier approval is separate from submission and can take business days.
+
+US A2P 10DLC registration uses `purpose="sms"`, `country_code="US"`, and
+`number_type="local"`. Supply `number_id` when the form requires an existing
+sender. Preview the campaign and get the user's approval before paid submission.
+Read the current fees from the requirements; do not hard-code them.
+If confirmation is `code`, use the applicant's code with `confirm_verification`.
+If it is `reply`, the applicant must reply to the carrier's text. Correct an
+application at `needs_information` with `amend_sms_application` on the same
+registration rather than creating another paid registration.
+
+After approval, buy a current quote with `acquire_number` and the user's
+confirmed setup-plus-monthly total in `confirm_total_cents`. A purchased number
+does not answer automatically: create or reuse a Hail agent, then `route_number`.
+Agents support instructions, greetings, language/voice settings, call limits,
+and handover contacts. Buying a US number and registering it for US SMS are
+different operations; number ownership alone does not authorize US texting.
+
+The current MCP catalog has no webhook-management tool. To connect your own
+application, create webhook subscriptions through the REST API or CLI using an
+authorized session. Use MCP to read events and manage the number/agent side.
+Likewise, MCP lists email identities and reads mail; use the console or REST API
+for explicit inbox/domain creation. Do not invent MCP tool names for these tasks.
 
 Use an existing account when available. Validate a configured API key before
 creating resources or sending messages:
@@ -65,7 +120,7 @@ the claim link. On signup 429, wait 24 hours instead of repeating the request.
 Inspect existing resources before creating new ones. Reuse the number, inbox,
 and saved agent that fit the user's task.
 
-### Phone number
+### Phone number through REST
 
 ```bash
 curl --fail-with-body -sS "https://api.hail.so/v1/numbers?limit=50" \

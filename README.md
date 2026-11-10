@@ -10,6 +10,29 @@ agent, sending messages, and reading conversations and delivery events.
 Incoming email is available to your assistant or application through the API
 and webhooks.
 
+## What your assistant can set up
+
+Through MCP, your assistant can:
+
+- Find and provision phone numbers across Hail's 120+ country coverage, using
+  live quotes to check availability, channel capabilities, prices, and paperwork.
+- Collect and submit required registration details and documents, including US
+  A2P 10DLC applications; preview campaigns, track review, handle confirmation,
+  and correct an existing application when the carrier requests more information.
+- Create a Hail agent with instructions, greeting, language and voice settings,
+  limits, and handover contacts, then route a number's calls and texts to it.
+- Make calls, send texts and email, read incoming messages and attachments,
+  manage contacts, and inspect transcripts, delivery events, and email statistics.
+
+Purchases and registration submissions need the user's authorization and any
+required credits. Carrier approval and inventory determine what is available;
+not every country supports every number type or channel.
+
+You can also connect your own application through signed webhooks. Configure
+subscriptions through the REST API or CLI: the current MCP catalog has no
+webhook-management tool. Explicit inbox/domain creation uses the console or
+REST API; MCP can list identities and work with email.
+
 ## Use the skill
 
 Read [SKILL.md](skills/hail/SKILL.md), or get the same instructions at
