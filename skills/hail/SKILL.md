@@ -8,21 +8,16 @@ metadata:
 
 # Give your AI assistant a phone number and an email inbox
 
-Let your assistant handle calls, texts, and email. Building an app? Add AI calls,
-email, and SMS with one API.
+Get phone numbers in 120+ countries and an email inbox for your AI assistant.
+Let it answer calls, texts, and email. Building an app? Add AI calls, email, and
+SMS with one API.
 
 Use this skill to set up a number or inbox, answer incoming calls, texts, and
 email, send messages, and read conversations and delivery events.
 
-**Availability:** saved Hail agents answer calls and texts today. Native Hail
-agent replies to email are coming soon. Incoming email is already available
-through MCP, the API, and webhooks for your assistant or application to process.
-The email-agent routing instructions below are conditional on that feature
-being available in the connected account's deployed tools and API.
-
-Through MCP, an assistant can quote and buy numbers, handle required registration
-including US A2P 10DLC, create a Hail agent, and route communication to it as each
-channel becomes available.
+Through MCP, your assistant can find and provision numbers in 120+ countries,
+handle required registration including US A2P 10DLC, create a Hail agent, and
+connect numbers and inboxes so it can answer calls, texts, and email.
 For an application that handles events itself, connect signed webhooks through
 the REST API or CLI.
 
@@ -49,7 +44,7 @@ an operation already available through the authorized MCP connection.
 | Discover and check registration requirements | `get_verification_requirements`, `check_verification` |
 | Submit documents and track carrier review | `create_file_upload`, `submit_verification`, `list_verifications`, `get_verification` |
 | Preview, confirm, or correct US SMS registration | `preview_sms_application`, `confirm_verification`, `get_sms_application`, `amend_sms_application` |
-| Build and connect a Hail communication agent | `create_agent`, `update_agent`, `route_number` |
+| Build and connect a Hail communication agent | `create_agent`, `update_agent`, `route_number`, `route_email_domain` |
 | Call, text, and email | `place_call`, `send_sms`, `send_email` |
 | Read conversations, transcripts, and delivery | `list_calls`, `list_sms`, `list_emails`, `get_email`, `get_events`, `get_email_events`, `get_email_stats` |
 | Work with contacts and files | `lookup_contact`, `create_contact`, `list_contacts`, `create_file_upload`, `get_email_attachment` |
@@ -81,8 +76,8 @@ registration rather than creating another paid registration.
 After approval, buy a current quote with `acquire_number` and the user's
 confirmed setup-plus-monthly total in `confirm_total_cents`. A purchased number
 does not answer automatically: create or reuse a Hail agent, then `route_number`
-for calls and texts. Email routes through an address, not a phone number; see
-the email-reply launch instructions below.
+for calls and texts. Use `route_email_domain` to connect an inbox to the agent
+for email replies.
 Agents support instructions, greetings, language/voice settings, call limits,
 and handover contacts. Buying a US number and registering it for US SMS are
 different operations; number ownership alone does not authorize US texting.
@@ -181,8 +176,7 @@ curl --fail-with-body -sS "https://api.hail.so/v1/emails?direction=inbound&limit
 ### Answer incoming calls, texts, and email
 
 **Calls and texts:** create a saved agent with instructions and a greeting, then
-route the number to it. For email, route an address to the agent after the
-email-reply feature becomes available. This example describes an assistant
+route the number to it. For email, route an address to the agent. This example describes an assistant
 that takes appointment requests; connect your booking system through tools or
 webhooks when the task requires completing a booking.
 
@@ -202,14 +196,8 @@ Route only the channels the number supports. Incoming call events include
 `call.received`, `call.answered`, and `call.completed`; failures have their own
 outcomes. Answered inbound minutes use the same rates as outbound minutes.
 
-**Email replies (coming soon):** native Hail agents will reply to mail routed
-from an inbox, using that email thread. Before configuring this, check the
-discovered MCP catalog for `route_email_domain` and the deployed API for
-`AgentCreate.email_enabled` and `EmailDomainPatch.email_agent_id`. If they are
-absent, the account does not expose native email-agent routing yet; use the
-existing incoming-email API or webhook workflow.
-
-When the feature is available:
+**Email replies:** connect an inbox to a Hail agent so it can read the email
+thread and reply. Configure it through the console, MCP, REST API, or CLI:
 
 1. Create or update a live agent with `email_enabled: true` and email instructions.
    A greeting or phone number is not required for an email-only agent.
@@ -226,10 +214,6 @@ When the feature is available:
    reply limits, agent status, and account funds can prevent a reply. Incoming
    mail is retained when replies are skipped; do not promise every email gets
    an automatic response.
-
-Do not add these launch-only fields to today's requests if the deployed schema
-lacks them. Refresh the tool catalog after rollout and remove the coming-soon
-label only after both API support and the reply worker are deployed and checked.
 
 ## 3. Send email, texts, and calls
 

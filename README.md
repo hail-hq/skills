@@ -1,18 +1,17 @@
 # Give your AI assistant a phone number and an email inbox
 
-Let your assistant handle calls, texts, and email. Building an app? Add AI calls,
-email, and SMS with one API.
+Get phone numbers in **120+ countries** and an email inbox for your AI assistant.
+Let it answer calls, texts, and email. Building an app? Add AI calls, email, and
+SMS with one API.
 
 This repository contains the official [Hail skill](skills/hail/SKILL.md) for AI
 assistants and coding agents. It guides an assistant through connecting to Hail,
 setting up a number or inbox, answering incoming calls, texts, and email, sending
 messages, and reading conversations and delivery events.
 
-**Available now:** saved Hail agents answer calls and texts. Your assistant or
-application can already read incoming email through MCP, the API, and webhooks.
-**Coming soon:** native Hail agents that reply to email threads. The skill includes
-launch instructions and tells the assistant to check deployed tool/API support
-before using them.
+Connect numbers and inboxes to a Hail agent that answers incoming calls, texts,
+and email. Or use the API and signed webhooks to connect your own
+assistant or application.
 
 ## What your assistant can set up
 
@@ -24,9 +23,8 @@ Through MCP, your assistant can:
   A2P 10DLC applications; preview campaigns, track review, handle confirmation,
   and correct an existing application when the carrier requests more information.
 - Create a Hail agent with instructions, greeting, language and voice settings,
-  limits, and handover contacts, then route incoming communication to it. Calls
-  and texts route through a number today; native email replies will route
-  through an inbox when the feature launches.
+  limits, and handover contacts. Route numbers to it for calls and texts, and
+  inboxes for email replies.
 - Make calls, send texts and email, read incoming messages and attachments,
   manage contacts, and inspect transcripts, delivery events, and email statistics.
 
@@ -37,9 +35,8 @@ not every country supports every number type or channel.
 You can also connect your own application through signed webhooks. Configure
 subscriptions through the REST API or CLI: the current MCP catalog has no
 webhook-management tool. Explicit inbox/domain creation uses the console or
-REST API; MCP can list identities and work with email. After native email-agent
-routing launches, `route_email_domain` will connect an inbox to an email-enabled
-Hail agent. Use the default member scope unless the user approves replies to
+REST API; MCP can list identities and work with email. Use `route_email_domain`
+to connect an inbox to an email-enabled Hail agent. Use the default member scope unless the user approves replies to
 outside senders.
 
 ## Use the skill
