@@ -5,10 +5,14 @@ email, and SMS with one API.
 
 This repository contains the official [Hail skill](skills/hail/SKILL.md) for AI
 assistants and coding agents. It guides an assistant through connecting to Hail,
-setting up a number or inbox, answering incoming calls and texts with a saved
-agent, sending messages, and reading conversations and delivery events.
-Incoming email is available to your assistant or application through the API
-and webhooks.
+setting up a number or inbox, answering incoming calls, texts, and email, sending
+messages, and reading conversations and delivery events.
+
+**Available now:** saved Hail agents answer calls and texts. Your assistant or
+application can already read incoming email through MCP, the API, and webhooks.
+**Coming soon:** native Hail agents that reply to email threads. The skill includes
+launch instructions and tells the assistant to check deployed tool/API support
+before using them.
 
 ## What your assistant can set up
 
@@ -20,7 +24,9 @@ Through MCP, your assistant can:
   A2P 10DLC applications; preview campaigns, track review, handle confirmation,
   and correct an existing application when the carrier requests more information.
 - Create a Hail agent with instructions, greeting, language and voice settings,
-  limits, and handover contacts, then route a number's calls and texts to it.
+  limits, and handover contacts, then route incoming communication to it. Calls
+  and texts route through a number today; native email replies will route
+  through an inbox when the feature launches.
 - Make calls, send texts and email, read incoming messages and attachments,
   manage contacts, and inspect transcripts, delivery events, and email statistics.
 
@@ -31,7 +37,10 @@ not every country supports every number type or channel.
 You can also connect your own application through signed webhooks. Configure
 subscriptions through the REST API or CLI: the current MCP catalog has no
 webhook-management tool. Explicit inbox/domain creation uses the console or
-REST API; MCP can list identities and work with email.
+REST API; MCP can list identities and work with email. After native email-agent
+routing launches, `route_email_domain` will connect an inbox to an email-enabled
+Hail agent. Use the default member scope unless the user approves replies to
+outside senders.
 
 ## Use the skill
 
@@ -66,7 +75,10 @@ before sending. Phone numbers can have setup and recurring charges. Review
 [current pricing](https://hail.so/pricing) before a purchase.
 
 A funded account still needs the right sender setup. SMS may require a dedicated
-number and carrier registration. Custom email domains need DNS verification.
+number and carrier registration. For US 10DLC, the current Hail requirements
+and submission interfaces require `number_type="local"`; it is not an extra
+choice to ask the applicant. Preview and amendment tools have different schemas.
+Custom email domains need DNS verification.
 The skill explains these prerequisites and distinguishes a dedicated incoming
 number from a shared outbound call line.
 
