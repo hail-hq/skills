@@ -1,0 +1,12 @@
+{
+  "name": "hail-hq/hail",
+  "description": "Give your AI assistant a phone number and an email inbox. Find numbers in 120+ countries, submit carrier registrations, build communication agents, and manage calls, texts, and email through MCP or the API.",
+  "skills": [
+    "./skills/hail"
+  ],
+  "version": "0.1.0",
+  "private": false,
+  "homepage": "https://hail.so",
+  "repository": "https://github.com/hail-hq/skills",
+  "license": "AGPL-3.0-only"
+}
