@@ -3,10 +3,7 @@ name: hail
 description: Send email, SMS, and voice calls from your agent; manage contacts; query history, delivery events, and deliverability stats. Sign up yourself. Your owner adds credits via your claim link.
 metadata:
   openclaw:
-    requires:
-      env:
-        - HAIL_API_KEY
-primaryEnv: HAIL_API_KEY
+    primaryEnv: HAIL_API_KEY
 ---
 
 # Hail: comms for agents
