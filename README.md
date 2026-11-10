@@ -96,12 +96,6 @@ The website serves its local generator. This repository needs no website hosting
 or Vercel project. GitHub updates do not automatically update an installed skill
 or prove that a registry has refreshed its listing.
 
-## Tessl listing
-
-Once the skill is on this repository's default branch, submit
-`https://github.com/hail-hq/skills` through
-[Tessl's submission page](https://tessl.io/registry/skills/submit).
-
 ## License
 
 [GNU AGPLv3](LICENSE), matching the public Hail project's license.
