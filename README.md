@@ -1,51 +1,75 @@
-# Hail agent skills
+# Give your AI assistant a phone number and an email inbox
 
-Official skills for agents that use [Hail](https://hail.so) to send email, SMS,
-and voice calls, manage contacts, and query delivery events.
+Let your assistant handle calls, texts, and email. Building an app? Add AI calls,
+email, and SMS with one API.
 
-## Hail
+This repository contains the official [Hail skill](skills/hail/SKILL.md) for AI
+assistants and coding agents. It guides an assistant through connecting to Hail,
+setting up a number or inbox, answering incoming calls and texts with a saved
+agent, sending messages, and reading conversations and delivery events.
+Incoming email is available to your assistant or application through the API
+and webhooks.
 
-Read [`skills/hail/SKILL.md`](skills/hail/SKILL.md), or use the hosted version at
+## Use the skill
+
+Read [SKILL.md](skills/hail/SKILL.md), or get the same instructions at
 [hail.so/skill.md](https://hail.so/skill.md).
 
-To download the skill for an agent that supports Agent Skills:
+For a client that supports Agent Skills:
 
 ```bash
 git clone https://github.com/hail-hq/skills.git hail-skills
 ```
 
-Install the `hail-skills/skills/hail` folder in your agent's skill directory.
-Follow your client's instructions for the directory location.
+Install `hail-skills/skills/hail` in your client's skill directory. Follow the
+client's instructions for the directory location. Update installed copies when
+new versions are published; a local installation is a snapshot.
 
-The skill explains how to use an existing `HAIL_API_KEY` or sign up with your
-owner's authorization. New workspaces start with a $0 balance. Your owner must
-add credits before sending. Never commit API keys or claim links.
+## Connect your assistant or app
 
-## Maintenance
+- [Console](https://hail.so/console): set up your account, numbers, inbox, and agents.
+- [MCP](https://hail.so/mcp): connect an assistant using OAuth.
+- [API documentation](https://hail.so/docs): build calls, texts, and email into your app.
+- [CLI](https://hail.so/docs/cli): work from the terminal; install with `brew install hail-hq/tap/hail`.
 
-This repository contains a generated copy of the skill served by the Hail
-website. Maintainers update the website's `buildSkillMd` generator, run
-`scripts/sync-agent-skill.mjs` from that repository against a task worktree of
-this repository, and open linked PRs. Do not edit the generated skill directly.
+For REST examples, use an existing `HAIL_API_KEY`. Create a new account only
+when needed. The skill includes optional assistant-led signup and account
+recovery instructions. Keep API keys and account claim links out of Git.
 
-The export includes the neutral skill without signup attribution. The website
-serves its own local generator and does not fetch this repository at runtime.
+## Setup and pricing
 
-Platform changes require a skill review; matching copies alone do not prove
-that the instructions are current. The website repository has the maintenance
-and deployment runbook, a read-only OpenAPI example checker, and weekly checks
-against the deployed API and both published copies. These checks report drift;
-they do not rewrite or publish instructions automatically. Installed skills
-are snapshots and must be updated through the client's installer or downloaded
-again. A GitHub update does not by itself confirm a Tessl registry refresh.
+Hail uses pay-as-you-go pricing. A new workspace starts at $0 and needs credits
+before sending. Phone numbers can have setup and recurring charges. Review
+[current pricing](https://hail.so/pricing) before a purchase.
 
-## Tessl
+A funded account still needs the right sender setup. SMS may require a dedicated
+number and carrier registration. Custom email domains need DNS verification.
+The skill explains these prerequisites and distinguishes a dedicated incoming
+number from a shared outbound call line.
 
-Submit `https://github.com/hail-hq/skills` through
-[Tessl's skill submission page](https://tessl.io/registry/skills/submit) once the
-skill is present on the default branch. Tessl can discover the committed
-`skills/hail/SKILL.md`.
+## Keep the instructions current
+
+The website's `lib/agent-skill-doc.ts` generates both this repository's
+`skills/hail/SKILL.md` and the hosted `hail.so/skill.md`. Maintainers update the
+generator, export it into a task worktree of this repository, validate it, and
+open linked PRs. Do not edit the generated skill independently.
+
+Review this README and the entire skill when product positioning or platform
+behavior changes. The website's publishing runbook and `AGENTS.md` define the
+process. Its PR checks validate API examples; weekly checks compare the deployed
+API and the two published copies. Checks detect drift, but people or coding
+agents still need to update and review the instructions.
+
+The website serves its local generator. This repository needs no website hosting
+or Vercel project. GitHub updates do not automatically update an installed skill
+or prove that a registry has refreshed its listing.
+
+## Tessl listing
+
+Once the skill is on this repository's default branch, submit
+`https://github.com/hail-hq/skills` through
+[Tessl's submission page](https://tessl.io/registry/skills/submit).
 
 ## License
 
-GNU AGPLv3; see [LICENSE](LICENSE), matching the public Hail project's license.
+[GNU AGPLv3](LICENSE), matching the public Hail project's license.
