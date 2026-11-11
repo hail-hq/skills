@@ -1,9 +1,9 @@
-# Connect our team inbox
+# Add email to our front desk
 
-We already have a Hail inbox and a saved assistant for our front desk. Make the
-assistant handle email too, but only for verified members of our workspace.
-Prepare the changes and a reply-check plan. A sample incoming email is included;
-explain how you would handle it while preparing the setup.
+Our front-desk assistant already handles phone conversations. Our team wants to
+reach it by email too. Prepare the setup and a way to check that it works.
+The workspace inventory is in the file; tell us what you still need to inspect
+before changing anything.
 
 This is an offline rehearsal, not permission to change an account or contact anyone.
 Do not make network requests or use live credentials. Use the supplied facts and
