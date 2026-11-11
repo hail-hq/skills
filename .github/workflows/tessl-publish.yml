@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - skills/**
+      - evals/**
+      - tessl.json
       - .tessl-plugin/plugin.json
       - README.md
       - LICENSE
@@ -12,6 +14,8 @@ on:
     branches: [main]
     paths:
       - skills/**
+      - evals/**
+      - tessl.json
       - .tessl-plugin/plugin.json
       - README.md
       - LICENSE
@@ -39,6 +43,7 @@ jobs:
           version: 0.119.0
       - run: tessl plugin lint .
       - run: tessl skill lint .
+      - run: tessl eval lint .
       # Versions are immutable. Change the manifest version in the same PR as
       # packaged content; publishing never commits or pushes to the repository.
       - name: Require a version bump for package changes
@@ -65,7 +70,7 @@ jobs:
                   raise SystemExit('Cannot read the PR base commit.')
               raise SystemExit(0)
           changed = subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines()
-          packaged = any(p.startswith('skills/') or p in (manifest, 'README.md', 'LICENSE') for p in changed)
+          packaged = any(p.startswith(('skills/', 'evals/')) or p in (manifest, 'README.md', 'LICENSE', 'tessl.json') for p in changed)
           if packaged and current <= semver(json.loads(previous.stdout)['version']):
               raise SystemExit('Bump .tessl-plugin/plugin.json version when packaged content changes.')
           PY

@@ -1,0 +1,32 @@
+{
+  "connection": "Authorized Hail MCP connection; no REST key supplied.",
+  "applicant": "A US business; owner has not supplied its registration details yet.",
+  "inventory_summary": [
+    {
+      "quote_id": "quote_auto_1",
+      "country_code": "US",
+      "number_type": "local",
+      "capabilities": [
+        "voice",
+        "sms"
+      ],
+      "setup_cents": 100,
+      "monthly_cents": 200,
+      "by_request": false
+    },
+    {
+      "quote_id": "quote_manual_1",
+      "country_code": "US",
+      "number_type": "local",
+      "capabilities": [
+        "voice",
+        "sms"
+      ],
+      "setup_cents": 0,
+      "monthly_cents": 150,
+      "by_request": true
+    }
+  ],
+  "existing_agents": [],
+  "existing_registrations": []
+}

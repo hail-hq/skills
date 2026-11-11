@@ -1,0 +1,31 @@
+{
+  "context": "Recovering an unknown Hail email-send outcome with saved idempotency data and delivery verification.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "unknown_outcome",
+      "description": "Explains the timeout does not prove either rejection or delivery, and does not claim success without evidence.",
+      "max_score": 4
+    },
+    {
+      "name": "identical_retry",
+      "description": "If replaying, proposes the exact same POST URL, JSON body, and saved Idempotency-Key appointment-confirmation-42. Does not generate a new key, alter the body or recipients, or enable unprotected automatic retries.",
+      "max_score": 7
+    },
+    {
+      "name": "inspect_conflict",
+      "description": "Inspects any 409 conflict before another attempt, distinguishing an in-progress original request from key/payload mismatch; no blind new-key resend.",
+      "max_score": 3
+    },
+    {
+      "name": "verify_delivery",
+      "description": "Uses returned email ID and delivery events or matching history to verify outcome; an accepted send is not described as delivered. Does not use open/click tracking as proof for this plain-text email.",
+      "max_score": 4
+    },
+    {
+      "name": "no_extra_sends",
+      "description": "Proposed calls remain review-only, preserve prior authorization for only one confirmation, and keep credentials out of artifacts.",
+      "max_score": 2
+    }
+  ]
+}

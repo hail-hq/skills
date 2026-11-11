@@ -41,8 +41,8 @@ outside senders.
 
 ## Use the skill
 
-Read [SKILL.md](skills/hail/SKILL.md), or get the same instructions at
-[hail.so/skill.md](https://hail.so/skill.md).
+Read [SKILL.md](skills/hail/SKILL.md) and its linked references, or get the complete
+standalone guide at [hail.so/skill.md](https://hail.so/skill.md).
 
 For a client that supports Agent Skills:
 
@@ -50,8 +50,9 @@ For a client that supports Agent Skills:
 git clone https://github.com/hail-hq/skills.git hail-skills
 ```
 
-Install `hail-skills/skills/hail` in your client's skill directory. Follow the
-client's instructions for the directory location. Update installed copies when
+Install the whole `hail-skills/skills/hail` folder, including `references/`,
+in your client's skill directory. Follow the client's instructions for the
+directory location. Update installed copies when
 new versions are published; a local installation is a snapshot.
 
 ## Connect your assistant or app
@@ -81,20 +82,31 @@ number from a shared outbound call line.
 
 ## Keep the instructions current
 
-The website's `lib/agent-skill-doc.ts` generates both this repository's
-`skills/hail/SKILL.md` and the hosted `hail.so/skill.md`. Maintainers update the
-generator, export it into a task worktree of this repository, validate it, and
-open linked PRs. Do not edit the generated skill independently.
+The website's `lib/agent-skill-doc.ts` generates this repository's
+compact `skills/hail/SKILL.md`, its task references, and the complete hosted
+`hail.so/skill.md`. Maintainers update the generator,
+export it into a task worktree of this repository, validate it, and
+open linked PRs. Do not edit the generated skill or references independently.
 
 Review this README and the entire skill when product positioning or platform
 behavior changes. The website's publishing runbook and `AGENTS.md` define the
 process. Its PR checks validate API examples; weekly checks compare the deployed
-API and the two published copies. Checks detect drift, but people or coding
+API and both distribution formats, including the reference files. Checks detect
+drift, but people or coding
 agents still need to update and review the instructions.
 
 The website serves its local generator. This repository needs no website hosting
 or Vercel project. GitHub updates do not automatically update an installed skill
 or prove that a registry has refreshed its listing.
+
+## Behavior checks
+
+The four scenarios in `evals/` cover US number setup, member-only email replies,
+recovery after a timed-out send, and existing-account recovery. They use synthetic
+facts and produce review artifacts without contacting Hail. They need no live
+credentials and do not send messages, buy numbers, or submit registrations.
+Compare runs with and without the skill; report failures as well as successes.
+These rehearsals do not prove live carrier approval, delivery, or agent replies.
 
 ## License
 

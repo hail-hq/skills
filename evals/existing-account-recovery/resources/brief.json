@@ -1,0 +1,13 @@
+{
+  "owner_email": "owner@example.com",
+  "signup": {
+    "status": 409,
+    "claim_url": "https://hail.so/claim/fixture-only-not-a-real-token"
+  },
+  "key_validation": {
+    "method": "GET",
+    "url": "https://api.hail.so/v1/whoami",
+    "status": 401
+  },
+  "balance_cents": 0
+}

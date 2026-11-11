@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.hail.so/v1/emails",
+    "headers": {
+      "Idempotency-Key": "appointment-confirmation-42"
+    },
+    "body": {
+      "to": [
+        "recipient@example.com"
+      ],
+      "subject": "Appointment confirmation",
+      "body_text": "Your appointment is confirmed for the time you requested.",
+      "recipient_consent": true
+    }
+  },
+  "outcome": "Read timeout after request transmission; no HTTP response or resource ID saved.",
+  "account": "Existing funded account, configured sender, valid API-key environment variable. User previously authorized this one confirmation."
+}
