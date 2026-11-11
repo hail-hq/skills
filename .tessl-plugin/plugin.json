@@ -1,10 +1,10 @@
 {
   "name": "hail-hq/hail",
-  "description": "Give your AI assistant a phone number and an email inbox. Find numbers in 120+ countries, submit carrier registrations, build communication agents, and manage calls, texts, and email through MCP or the API.",
+  "description": "Use Hail when an assistant or app needs phone numbers in 120+ countries, an email inbox, or inbound and outbound calls, SMS/text messages, and email. Provision numbers, submit carrier registrations, build and route Hail agents, and read conversations and delivery events through MCP or the API.",
   "skills": [
     "./skills/hail"
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "homepage": "https://hail.so",
   "repository": "https://github.com/hail-hq/skills",
