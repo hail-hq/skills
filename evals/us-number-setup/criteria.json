@@ -1,0 +1,31 @@
+{
+  "context": "Number selection, carrier registration, price authorization, and inbound routing for a US business using Hail MCP.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "authorized_connection",
+      "description": "Uses existing OAuth MCP access and quote/requirement discovery instead of demanding a REST API key or signing up again.",
+      "max_score": 3
+    },
+    {
+      "name": "price_and_inventory",
+      "description": "Explains setup plus monthly cost for the current automatic quote, refreshes an expired quote before purchase, treats by_request inventory as a support order, and stops before purchase until the user approves the quoted total.",
+      "max_score": 5
+    },
+    {
+      "name": "registration",
+      "description": "Discovers requirements for the selected quote and actual applicant; collects missing details without inventing attestations. For Hail SMS requirement/check/submission calls supplies purpose=sms, country_code=US, number_type=local where required, without asking the applicant to choose number type. Does not blindly add number_type to preview/amend tools.",
+      "max_score": 5
+    },
+    {
+      "name": "separate_operations",
+      "description": "Separates number acquisition from US SMS approval, plans campaign preview and fee approval before paid registration, and does not promise immediate carrier approval or US SMS readiness after purchase alone.",
+      "max_score": 4
+    },
+    {
+      "name": "inbound_routing",
+      "description": "Creates or reuses a saved Hail agent and routes only supported voice/SMS channels; acquisition alone is not described as enabling answers. Proposed tool calls use real Hail names and preserve the price-confirmation gate for acquire_number.",
+      "max_score": 3
+    }
+  ]
+}

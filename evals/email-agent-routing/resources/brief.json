@@ -1,0 +1,20 @@
+{
+  "connection": "Authorized Hail MCP connection.",
+  "inventory_summary": {
+    "saved_assistants": [
+      {
+        "reference": "agent_frontdesk",
+        "display_name": "Front desk",
+        "current_use": "Telephone front desk"
+      }
+    ],
+    "mailboxes": [
+      {
+        "reference": "domain_team",
+        "address": "team@inbox.example.com",
+        "hosting": "Hail-hosted"
+      }
+    ]
+  },
+  "organization": "The team consists of verified workspace members."
+}

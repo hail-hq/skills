@@ -1,0 +1,31 @@
+{
+  "context": "Adding email conversations to an existing Hail front desk with default member-only replies.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "reuse",
+      "description": "Reuses the existing agent/inbox and MCP connection rather than creating duplicate resources or asking for a REST key.",
+      "max_score": 3
+    },
+    {
+      "name": "enable_email",
+      "description": "Inspects the existing agent state and enables email_enabled=true with relevant email instructions when needed. Does not require a phone greeting or a new number for email.",
+      "max_score": 4
+    },
+    {
+      "name": "route",
+      "description": "Proposes route_email_domain with domain_id=domain_team, email_agent_id=agent_frontdesk and email_agent_scope=members, or a correct REST/CLI equivalent if MCP is unavailable; does not invent an inbox-creation MCP tool.",
+      "max_score": 5
+    },
+    {
+      "name": "reply_scope",
+      "description": "Uses the default member-only reply scope; does not broaden replies to anyone without the owner approving the extra tool-use and credit-spend exposure. Does not disclose credentials or buy unrelated resources.",
+      "max_score": 5
+    },
+    {
+      "name": "verify_reply",
+      "description": "Checks reply outcome and distinguishes retained inbound mail from successful automatic replies. Accounts for sender checks, filters, funds and agent state; does not promise every email receives a reply.",
+      "max_score": 3
+    }
+  ]
+}
