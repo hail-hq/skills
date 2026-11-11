@@ -129,7 +129,7 @@ jobs:
         if: steps.registry.outputs.exists != 'true'
         run: |
           WORKSPACE="$(python3 -c 'import json; print(json.load(open(".tessl-plugin/plugin.json"))["name"].split("/")[0])')"
-          tessl plugin publish . --workspace "$WORKSPACE"
+          tessl plugin publish . --workspace "$WORKSPACE" --with-scenario-quality-check
       - name: Report the exact package version
         run: |
           PACKAGE="$(python3 -c 'import json; p=json.load(open(".tessl-plugin/plugin.json")); print(p["name"] + "@" + p["version"])')"
