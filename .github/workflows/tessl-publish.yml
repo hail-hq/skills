@@ -1,0 +1,131 @@
+name: Validate and publish skill package
+
+on:
+  pull_request:
+    paths:
+      - skills/**
+      - .tessl-plugin/plugin.json
+      - README.md
+      - LICENSE
+      - .github/workflows/tessl-publish.yml
+  push:
+    branches: [main]
+    paths:
+      - skills/**
+      - .tessl-plugin/plugin.json
+      - README.md
+      - LICENSE
+      - .github/workflows/tessl-publish.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: 0.119.0
+      - run: tessl plugin lint .
+      - run: tessl skill lint .
+      # Versions are immutable. Change the manifest version in the same PR as
+      # packaged content; publishing never commits or pushes to the repository.
+      - name: Require a version bump for package changes
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          manifest = '.tessl-plugin/plugin.json'
+          version = json.loads(Path(manifest).read_text())['version']
+          def semver(value):
+              if not re.fullmatch(r'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)', value):
+                  raise SystemExit('Use a major.minor.patch manifest version.')
+              return tuple(map(int, value.split('.')))
+          current = semver(version)
+          base = os.environ['BASE_SHA']
+          previous = subprocess.run(['git', 'show', f'{base}:{manifest}'], capture_output=True, text=True)
+          if previous.returncode:
+              # The first package manifest has no previously published version.
+              exists = subprocess.run(['git', 'cat-file', '-e', base], capture_output=True)
+              if exists.returncode:
+                  raise SystemExit('Cannot read the PR base commit.')
+              raise SystemExit(0)
+          changed = subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines()
+          packaged = any(p.startswith('skills/') or p in (manifest, 'README.md', 'LICENSE') for p in changed)
+          if packaged and current <= semver(json.loads(previous.stdout)['version']):
+              raise SystemExit('Bump .tessl-plugin/plugin.json version when packaged content changes.')
+          PY
+
+  publish:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Check publishing credentials and source identity
+        env:
+          TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+        run: |
+          test -n "$TESSL_TOKEN" || { echo '::error::Configure the TESSL_TOKEN repository secret with a publisher workspace API key.'; exit 1; }
+          test -n "$ACTIONS_ID_TOKEN_REQUEST_URL" || { echo '::error::GitHub identity is required to link this package to its source repository.'; exit 1; }
+      - uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e # v2
+        with:
+          version: 0.119.0
+          token: ${{ secrets.TESSL_TOKEN }}
+      - name: Check the exact registry version
+        id: registry
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess, sys
+          from pathlib import Path
+          package = json.loads(Path('.tessl-plugin/plugin.json').read_text())
+          name, version = package['name'], package['version']
+          result = subprocess.run(['tessl', 'plugin', 'info', f'{name}@{version}', '--json'], capture_output=True, text=True)
+          if result.returncode == 0:
+              published = json.loads(result.stdout)['version']
+              if published['version'] != version:
+                  raise SystemExit('Registry returned a different version.')
+              if published.get('archived') or published.get('moderationPassed') is not True:
+                  raise SystemExit('This version already exists but is not approved and active. Inspect its publication status before retrying.')
+              exists = True
+              print(f'{name}@{version} is already published; skipping upload.')
+          else:
+              # Match only the pinned CLI's two verified not-found messages.
+              # Other errors, including auth and transport failures, stop the job.
+              lines = result.stderr.strip().splitlines()
+              message = lines[0].removeprefix('✘ ') if lines else ''
+              missing = {f'Could not find plugin "{name}".', f'Plugin "{name}" exists, but it has no version "{version}".'}
+              if message not in missing:
+                  sys.stderr.write(result.stderr or result.stdout)
+                  raise SystemExit(result.returncode)
+              exists = False
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'exists={str(exists).lower()}\n')
+          PY
+      - name: Publish to the manifest's workspace
+        if: steps.registry.outputs.exists != 'true'
+        run: |
+          WORKSPACE="$(python3 -c 'import json; print(json.load(open(".tessl-plugin/plugin.json"))["name"].split("/")[0])')"
+          tessl plugin publish . --workspace "$WORKSPACE"
+      - name: Report the exact package version
+        run: |
+          PACKAGE="$(python3 -c 'import json; p=json.load(open(".tessl-plugin/plugin.json")); print(p["name"] + "@" + p["version"])')"
+          tessl plugin info "$PACKAGE"
