@@ -128,25 +128,70 @@ jobs:
       - name: Publish to the manifest's workspace
         if: steps.registry.outputs.exists != 'true'
         run: |
-          python3 - <<'PY'
-          import json, subprocess
+          WORKSPACE="$(python3 -c 'import json; print(json.load(open(".tessl-plugin/plugin.json"))["name"].split("/")[0])')"
+          # Start the approved evaluation separately so publication success
+          # cannot hide a scenario-upload or evaluation-start failure.
+          tessl plugin publish . --workspace "$WORKSPACE" --skip-evals
+      - name: Run the approved one-off registry evaluation
+        run: |
+          python3 - <<'PYTHON'
+          import json, os, subprocess
           from pathlib import Path
+          def read_json(*args):
+              return json.loads(subprocess.check_output(['tessl', *args], text=True))
           package = json.loads(Path('.tessl-plugin/plugin.json').read_text())
-          workspace = package['name'].split('/')[0]
-          options = ['--skip-evals']
-          # Only this approved release runs registry evaluations. All other
-          # versions keep skipping them; no later toggle or cleanup is needed.
-          if package['version'] == '0.1.3':
-              usage = json.loads(subprocess.check_output(['tessl', 'org', 'usage', '--json'], text=True))
-              credits = usage['credits']
-              if usage['plan']['code'] != 'free' or credits.get('overageAllowed') is not False:
-                  raise SystemExit('One-off evaluations require the Free plan with cash overage disabled.')
-              if credits.get('overLimit') is not False or credits.get('remaining', 0) <= 0:
-                  raise SystemExit('No available free credits. Publishing stopped without starting evaluations.')
-              print(f"One-off 0.1.3 evaluations: {credits['remaining']} free credits available; cash overage disabled.")
-              options = ['--with-scenario-quality-check']
-          subprocess.run(['tessl', 'plugin', 'publish', '.', '--workspace', workspace, *options], check=True)
-          PY
+          # Only this approved release runs evaluations. All other versions skip.
+          if package['version'] != '0.1.3':
+              raise SystemExit(0)
+          if package['name'] != 'hail-hq/hail':
+              raise SystemExit('One-off evaluation approval covers hail-hq/hail@0.1.3 only.')
+          workspace, _ = package['name'].split('/')
+          def registry_run(run_id):
+              attributes = read_json('eval', 'view', run_id, '--json')['data']['attributes']
+              context = attributes.get('evalRunFixtures', {}).get('context', {}).get('definition', {})
+              expected = {'type': 'plugin', 'name': package['name'], 'version': package['version']}
+              if any(context.get(key) != value for key, value in expected.items()):
+                  return None
+              return attributes
+          def report(run_id):
+              url = f'https://tessl.io/workspaces/{workspace}/eval-runs/{run_id}'
+              print(f'Registry evaluation: {url}')
+              if os.environ.get('GITHUB_STEP_SUMMARY'):
+                  with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
+                      output.write(f'Registry evaluation: [{run_id}]({url})\n')
+          # A rerun reuses an existing registry-linked run, including one whose
+          # creation succeeded before a transient workflow failure.
+          runs = read_json('eval', 'list', '--workspace', workspace, '--plugin', 'hail', '--context-type', 'plugin', '--limit', '100', '--json')
+          for item in runs['data']:
+              existing = registry_run(item['id'])
+              if existing is not None:
+                  report(item['id'])
+                  if existing.get('status') not in ('pending', 'completed'):
+                      raise SystemExit('The existing evaluation failed. Inspect its report; retry requires owner approval.')
+                  raise SystemExit(0)
+          if runs.get('links', {}).get('next'):
+              raise SystemExit('Evaluation history is incomplete. Inspect older runs before starting another.')
+          # Verified billing owner of hail-hq and its skills project. Select it
+          # explicitly; never infer the organization from the active CLI user.
+          org = '01a1c5bb-5698-7721-aa35-7a0ce34de060'
+          projects = read_json('project', 'list', '--org', org, '--json')['projects']
+          if not any(p['id'] == '01a1caac-3d56-7447-990f-a4707b933a93' and p['workspaceId'] == '01a1c62b-f956-70cb-8764-3d50bc2eb360' and p['sourceUri'] == 'github.com/hail-hq/skills' for p in projects):
+              raise SystemExit('Cannot confirm the evaluation project belongs to the approved billing organization.')
+          usage = read_json('org', 'usage', '--org', org, '--json')
+          credits = usage['credits']
+          if usage['plan']['code'] != 'free' or credits.get('overageAllowed') is not False:
+              raise SystemExit('One-off evaluations require the Free plan with cash overage disabled.')
+          if credits.get('overLimit') is not False or credits.get('remaining', 0) <= 0:
+              raise SystemExit('No available free credits. No evaluation was started.')
+          created = read_json('eval', 'run', './evals', '--context', 'hail-hq/hail@0.1.3', '--quality-check', '--json', '--no-wait')
+          if len(created) != 1 or not created[0].get('evalRunId'):
+              raise SystemExit('Tessl did not return one evaluation run ID. Inspect the run list before retrying.')
+          run_id = created[0]['evalRunId']
+          started = registry_run(run_id)
+          if started is None or started.get('status') not in ('pending', 'completed'):
+              raise SystemExit(f'Tessl did not confirm a registry-linked evaluation: {run_id}. Inspect it before retrying.')
+          report(run_id)
+          PYTHON
       - name: Report the exact package version
         run: |
           PACKAGE="$(python3 -c 'import json; p=json.load(open(".tessl-plugin/plugin.json")); print(p["name"] + "@" + p["version"])')"
