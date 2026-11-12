@@ -1,5 +1,7 @@
 # Give your AI assistant a phone number and an email inbox
 
+[![Hail skill review on Tessl](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.tessl.io%2Fv1%2Fbadges%2Fhail-hq%2Fhail)](https://tessl.io/registry/hail-hq/hail)
+
 Get phone numbers in **120+ countries** and an email inbox for your AI assistant.
 Call, text, and email in both directions. Building an app? Add AI calls, email,
 and SMS with one API.

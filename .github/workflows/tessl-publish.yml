@@ -17,7 +17,6 @@ on:
       - evals/**
       - tessl.json
       - .tessl-plugin/plugin.json
-      - README.md
       - LICENSE
       - .github/workflows/tessl-publish.yml
   workflow_dispatch:
@@ -70,7 +69,9 @@ jobs:
                   raise SystemExit('Cannot read the PR base commit.')
               raise SystemExit(0)
           changed = subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines()
-          packaged = any(p.startswith(('skills/', 'evals/')) or p in (manifest, 'README.md', 'LICENSE', 'tessl.json') for p in changed)
+          # README presentation updates ship on GitHub immediately; include them
+          # in the package on its next release rather than forcing a new version.
+          packaged = any(p.startswith(('skills/', 'evals/')) or p in (manifest, 'LICENSE', 'tessl.json') for p in changed)
           if packaged and current <= semver(json.loads(previous.stdout)['version']):
               raise SystemExit('Bump .tessl-plugin/plugin.json version when packaged content changes.')
           PY
