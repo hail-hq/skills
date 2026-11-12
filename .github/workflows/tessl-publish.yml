@@ -169,7 +169,9 @@ jobs:
                       output.write(f'Registry evaluation: [{run_id}]({url})\n')
           # A rerun reuses an existing registry-linked run, including one whose
           # creation succeeded before a transient workflow failure.
-          runs = read_json('eval', 'list', '--workspace', workspace, '--plugin', 'hail', '--context-type', 'plugin', '--limit', '100', '--json')
+          # --plugin filters optional CLI provenance metadata, not the actual
+          # registry context. Runs started with --context can omit that metadata.
+          runs = read_json('eval', 'list', '--workspace', workspace, '--context-type', 'plugin', '--limit', '100', '--json')
           for item in runs['data']:
               existing = registry_run(item['id'])
               if existing is not None:
