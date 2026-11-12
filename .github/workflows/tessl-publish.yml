@@ -147,8 +147,16 @@ jobs:
               raise SystemExit('One-off evaluation approval covers hail-hq/hail@0.1.3 only.')
           workspace, _ = package['name'].split('/')
           def registry_run(run_id):
-              attributes = read_json('eval', 'view', run_id, '--json')['data']['attributes']
-              context = attributes.get('evalRunFixtures', {}).get('context', {}).get('definition', {})
+              result = subprocess.run(['tessl', 'eval', 'view', run_id, '--json'], capture_output=True, text=True)
+              try:
+                  attributes = json.loads(result.stdout)['data']['attributes']
+              except (ValueError, KeyError, TypeError):
+                  raise SystemExit(f'Tessl could not read evaluation {run_id}: {result.stderr}')
+              # The pinned CLI returns valid JSON with exit 1 for a failed run.
+              # Inspect its context before deciding whether it affects 0.1.3.
+              if result.returncode and not (result.returncode == 1 and attributes.get('status') == 'failed'):
+                  raise SystemExit(f'Tessl could not read evaluation {run_id}: {result.stderr}')
+              context = attributes.get('evalRunFixtures', {}).get('context', {})
               expected = {'type': 'plugin', 'name': package['name'], 'version': package['version']}
               if any(context.get(key) != value for key, value in expected.items()):
                   return None
