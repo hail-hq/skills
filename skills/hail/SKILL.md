@@ -2,7 +2,7 @@
 name: hail
 description: Connects assistants and apps to Hail for phone numbers in 120+ countries, email inboxes, inbound and outbound calls, SMS/texts, and email. Use when configuring Hail numbers or agents, completing carrier registrations, sending or receiving messages and calls, or reading Hail conversations and delivery events through MCP or the API.
 metadata:
-  version: "0.1.2"
+  version: "0.1.3"
   openclaw:
     primaryEnv: HAIL_API_KEY
 ---
@@ -39,11 +39,11 @@ REST or CLI operation if needed; never invent a tool name or argument.
 | Preview, confirm, or correct US SMS registration | `preview_sms_application`, `confirm_verification`, `get_sms_application`, `amend_sms_application` |
 | Build and connect a Hail communication agent | `create_agent`, `update_agent`, `route_number`, `route_email_domain` |
 | Call, text, and email | `place_call`, `send_sms`, `send_email` |
-| Read conversations, transcripts, and delivery | `list_calls`, `list_sms`, `list_emails`, `get_email`, `get_events`, `get_email_events`, `get_email_stats` |
+| Read conversations, transcripts, and delivery | `list_calls`, `get_call`, `list_sms`, `list_emails`, `get_email`, `get_events`, `get_email_events`, `get_email_stats` |
 | Work with contacts and files | `lookup_contact`, `create_contact`, `list_contacts`, `create_file_upload`, `get_email_attachment` |
 
 The current MCP catalog has no webhook-management tool. To connect your own
-application, create webhook subscriptions through the REST API or CLI.
+application, create webhook subscriptions in the console or through the REST API.
 Explicit inbox/domain creation uses the console or REST API; MCP can list
 identities, read mail, and route an inbox to an agent.
 

@@ -35,9 +35,10 @@ required credits. Carrier approval and inventory determine what is available;
 not every country supports every number type or channel.
 
 You can also connect your own application through signed webhooks. Configure
-subscriptions through the REST API or CLI: the current MCP catalog has no
-webhook-management tool. Explicit inbox/domain creation uses the console or
-REST API; MCP can list identities and work with email. Use `route_email_domain`
+subscriptions in the console or through the REST API: the current MCP catalog
+and the CLI have no webhook-management commands. After each call, the
+`call.analyzed` webhook sends the transcript and a short AI summary.
+Explicit inbox/domain creation uses the console or REST API; MCP can list identities and work with email. Use `route_email_domain`
 to connect an inbox to an email-enabled Hail agent. Use the default member scope unless the user approves replies to
 outside senders.
 

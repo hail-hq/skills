@@ -7,6 +7,9 @@ curl --fail-with-body -sS "https://api.hail.so/v1/emails?limit=50" -H "authoriza
 curl --fail-with-body -sS "https://api.hail.so/v1/sms?limit=50" -H "authorization: Bearer $HAIL_API_KEY"
 curl --fail-with-body -sS "https://api.hail.so/v1/calls?limit=50" -H "authorization: Bearer $HAIL_API_KEY"
 
+# Read one call, including its transcript.
+curl --fail-with-body -sS "https://api.hail.so/v1/calls/CALL_ID" -H "authorization: Bearer $HAIL_API_KEY"
+
 # Read an email, its delivery events, or its raw MIME.
 curl --fail-with-body -sS "https://api.hail.so/v1/emails/EMAIL_ID" -H "authorization: Bearer $HAIL_API_KEY"
 curl --fail-with-body -sS "https://api.hail.so/v1/emails/EMAIL_ID/events" -H "authorization: Bearer $HAIL_API_KEY"
@@ -17,7 +20,9 @@ curl --fail-with-body -sS https://api.hail.so/v1/emails/stats -H "authorization:
 curl --fail-with-body -sS "https://api.hail.so/v1/events?limit=50" -H "authorization: Bearer $HAIL_API_KEY"
 ```
 
-Call transcripts are available through `GET /v1/events?id=call:CALL_ID`.
+`GET /v1/calls/CALL_ID` returns the call's `transcript`: each spoken turn with
+`role`, `text`, and `at`. Lists leave it out. `GET /v1/events?id=call:CALL_ID`
+also lists each turn as an event.
 Plain-text email has delivery and bounce events, but no open or click tracking.
 
 Calls, SMS, emails, contacts, numbers, and events use cursor pagination. Read
@@ -40,7 +45,10 @@ curl --fail-with-body -sS "https://api.hail.so/v1/contacts?limit=50" -H "authori
 
 Create a subscription with `POST /v1/webhooks`, supplying an HTTPS `target_url`
 and `event_types`. The catalog at `GET /v1/webhooks/event-types` lists supported
-names, including incoming messages and call outcomes.
+names, including incoming messages and call outcomes. Subscribe to
+`call.analyzed` to get each call's transcript and a short AI summary after it
+ends. It covers only calls where someone spoke that end after the subscription
+was created or last changed; `summary` is null when the model fails.
 
 Save the returned signing secret. Verify `X-Hail-Signature` against the raw
 request bytes, and deduplicate deliveries with `X-Hail-Delivery`. Hail retries

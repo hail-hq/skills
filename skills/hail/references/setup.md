@@ -105,7 +105,9 @@ curl --fail-with-body -sS -X PATCH https://api.hail.so/v1/numbers/$NUMBER_ID \
 
 Route only the channels the number supports. Incoming call events include
 `call.received`, `call.answered`, and `call.completed`; failures have their own
-outcomes. Answered inbound minutes use the same rates as outbound minutes.
+outcomes. About 10 seconds after a call ends, `call.analyzed` sends its
+transcript and a short summary. Answered inbound minutes start at the same price
+as outbound minutes.
 
 **Email replies:** connect an inbox to a Hail agent so it can read the email
 thread and reply. Configure it through the console, MCP, REST API, or CLI:
