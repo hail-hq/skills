@@ -26,9 +26,10 @@ turn. Each turn has `role`, `text`, and `at` (when the turn started).
 the call. The transcript grows while the call runs. Hail saves the last turns
 after the call ends. With a webhook, wait for `call.transcribed` before you act
 on it. MCP has no webhooks, and some calls never get that event: then read the
-call again at least 10 seconds after it ends. Turns can still arrive late. Texts sent during the call are not in it. Lists return
-`transcript: null`; read one call to get it. `GET /v1/events?id=call:CALL_ID`
-also lists each turn as an event.
+call again at least 10 seconds after it ends. Turns can still arrive late.
+Texts sent during the call are not in it. Lists return `transcript: null`;
+read one call to get it. `GET /v1/events?id=call:CALL_ID` also lists each
+turn as an event.
 Plain-text email has delivery and bounce events, but no open or click tracking.
 
 Calls, SMS, emails, contacts, numbers, and events use cursor pagination. Read
@@ -56,8 +57,11 @@ names, including incoming messages and call outcomes.
 Subscribe to `call.transcribed` to get a phone call's `transcript`, a short AI
 `summary`, and `duration_seconds`. It covers inbound and outbound calls and
 arrives at least 10 seconds after the call ends. Hail creates one event per call
-with spoken turns. It skips calls that ended before the subscription was created
-or last changed. A secret rotation counts as a change. So does a `PATCH` that
+with at least one non-empty turn. Calls with no spoken turns (no answer, busy,
+failed, or only blank turns) never get `call.transcribed`. For those, use
+`call.completed` or `call.failed`, or read `GET /v1/calls/CALL_ID`. Each
+subscription skips calls that ended before that subscription was created or
+last changed. A secret rotation counts as a change. So does a `PATCH` that
 sets a field to a value that is not null, even the same value. Hail skips a call
 whose event was not created within 24 hours of its end. `summary` and
 `duration_seconds` can be null.

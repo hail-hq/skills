@@ -106,9 +106,9 @@ curl --fail-with-body -sS -X PATCH https://api.hail.so/v1/numbers/$NUMBER_ID \
 Route only the channels the number supports. Incoming call events include
 `call.received`, `call.answered`, and `call.completed`; failures have their own
 outcomes. For the transcript and a short summary of inbound and outbound phone
-calls, subscribe to `call.transcribed`. Its limits are under "Receive events
-through webhooks" in [History and webhooks](history-and-webhooks.md#receive-events-through-webhooks). Answered inbound minutes start at the same price as
-outbound minutes.
+calls, subscribe to `call.transcribed`. Its limits are in
+[Receive events through webhooks](history-and-webhooks.md#receive-events-through-webhooks). Answered
+inbound minutes start at the same price as outbound minutes.
 
 **Email replies:** connect an inbox to a Hail agent so it can read the email
 thread and reply. Configure it through the console, MCP, REST API, or CLI:
