@@ -56,9 +56,9 @@ Subscribe to `call.analyzed` to get a phone call's `transcript`, a short AI
 `summary`, and `duration_seconds`. It covers inbound and outbound calls and
 arrives at least 10 seconds after the call ends. Hail creates one event per call
 with spoken turns. It skips calls that ended before the subscription was created
-or last changed. A secret rotation or a `PATCH` that changes a field, such as
-`status`, counts as a change. A call not sent within 24 hours is dropped.
-`summary` can be null.
+or last changed. A secret rotation, or any `PATCH` that sends a field (even the
+same value), counts as a change. Hail skips a call whose event was not created
+within 24 hours of its end. `summary` can be null.
 
 Save the returned signing secret. Verify `X-Hail-Signature` against the raw
 request bytes, and deduplicate deliveries with `X-Hail-Delivery`. Hail retries
