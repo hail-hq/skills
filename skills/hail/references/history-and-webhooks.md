@@ -23,8 +23,10 @@ curl --fail-with-body -sS "https://api.hail.so/v1/events?limit=50" -H "authoriza
 `GET /v1/calls/CALL_ID` returns the call's `transcript`: each spoken turn with
 `role` (`assistant` is the Hail agent; `user` is the person or answering
 machine it talks to), `text`, and `at` (when the turn started). The transcript
-grows while the call runs; wait for a final status or `call.analyzed` before
-acting on it. Lists return `transcript: null`; read one call to get it. `GET /v1/events?id=call:CALL_ID`
+grows while the call runs, and the last turns are saved after the call ends.
+Before acting on it, wait for `call.analyzed`, or wait 10 seconds after the call
+ends. Texts sent during the call are not in it. Lists return
+`transcript: null`; read one call to get it. `GET /v1/events?id=call:CALL_ID`
 also lists each turn as an event.
 Plain-text email has delivery and bounce events, but no open or click tracking.
 
@@ -48,13 +50,15 @@ curl --fail-with-body -sS "https://api.hail.so/v1/contacts?limit=50" -H "authori
 
 Create a subscription with `POST /v1/webhooks`, supplying an HTTPS `target_url`
 and `event_types`. The catalog at `GET /v1/webhooks/event-types` lists supported
-names, including incoming messages and call outcomes. Subscribe to
-`call.analyzed` to get a phone call's transcript and a short AI summary,
-inbound or outbound, at least 10 seconds after it ends. Hail creates one event
-per call, only for calls with spoken turns that end after the subscription was
-created or last changed (any `PATCH`, including a `status` change, or a secret
-rotation counts); a call not sent within 24 hours is dropped. `summary` can be
-null.
+names, including incoming messages and call outcomes.
+
+Subscribe to `call.analyzed` to get a phone call's `transcript`, a short AI
+`summary`, and `duration_seconds`. It covers inbound and outbound calls and
+arrives at least 10 seconds after the call ends. Hail creates one event per call
+with spoken turns. It skips calls that ended before the subscription was created
+or last changed. A secret rotation or a `PATCH` that changes a field, such as
+`status`, counts as a change. A call not sent within 24 hours is dropped.
+`summary` can be null.
 
 Save the returned signing secret. Verify `X-Hail-Signature` against the raw
 request bytes, and deduplicate deliveries with `X-Hail-Delivery`. Hail retries
