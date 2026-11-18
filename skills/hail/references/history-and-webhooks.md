@@ -21,7 +21,8 @@ curl --fail-with-body -sS "https://api.hail.so/v1/events?limit=50" -H "authoriza
 ```
 
 `GET /v1/calls/CALL_ID` returns the call's `transcript`: each spoken turn with
-`role`, `text`, and `at`. Lists leave it out. `GET /v1/events?id=call:CALL_ID`
+`role` (`assistant` is the Hail agent, `user` is the other person), `text`,
+and `at` (when the turn started). Lists leave it out. `GET /v1/events?id=call:CALL_ID`
 also lists each turn as an event.
 Plain-text email has delivery and bounce events, but no open or click tracking.
 
@@ -46,9 +47,10 @@ curl --fail-with-body -sS "https://api.hail.so/v1/contacts?limit=50" -H "authori
 Create a subscription with `POST /v1/webhooks`, supplying an HTTPS `target_url`
 and `event_types`. The catalog at `GET /v1/webhooks/event-types` lists supported
 names, including incoming messages and call outcomes. Subscribe to
-`call.analyzed` to get each call's transcript and a short AI summary after it
-ends. It covers only calls where someone spoke that end after the subscription
-was created or last changed; `summary` is null when the model fails.
+`call.analyzed` to get a phone call's transcript and a short AI summary,
+inbound or outbound, at least 10 seconds after it ends. It is sent once, only
+for calls with spoken turns that end after the subscription was created or last
+changed; a call not sent within 24 hours is dropped. `summary` can be null.
 
 Save the returned signing secret. Verify `X-Hail-Signature` against the raw
 request bytes, and deduplicate deliveries with `X-Hail-Delivery`. Hail retries
