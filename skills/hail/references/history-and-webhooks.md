@@ -24,7 +24,7 @@ curl --fail-with-body -sS "https://api.hail.so/v1/events?limit=50" -H "authoriza
 turn. Each turn has `role`, `text`, and `at` (when the turn started).
 `assistant` is the Hail agent. `user` is the person or answering machine on
 the call. The transcript grows while the call runs. Hail saves the last turns
-after the call ends. With a webhook, wait for `call.analyzed` before you act
+after the call ends. With a webhook, wait for `call.transcribed` before you act
 on it. MCP has no webhooks, and some calls never get that event: then read the
 call again at least 10 seconds after it ends. Turns can still arrive late. Texts sent during the call are not in it. Lists return
 `transcript: null`; read one call to get it. `GET /v1/events?id=call:CALL_ID`
@@ -53,7 +53,7 @@ Create a subscription with `POST /v1/webhooks`, supplying an HTTPS `target_url`
 and `event_types`. The catalog at `GET /v1/webhooks/event-types` lists supported
 names, including incoming messages and call outcomes.
 
-Subscribe to `call.analyzed` to get a phone call's `transcript`, a short AI
+Subscribe to `call.transcribed` to get a phone call's `transcript`, a short AI
 `summary`, and `duration_seconds`. It covers inbound and outbound calls and
 arrives at least 10 seconds after the call ends. Hail creates one event per call
 with spoken turns. It skips calls that ended before the subscription was created
