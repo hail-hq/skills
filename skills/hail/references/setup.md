@@ -112,10 +112,10 @@ Answered inbound minutes start at the same price as outbound minutes.
 **Your own API (HTTP tools):** an agent can call the customer's HTTPS API during
 calls, texts, and email, for example to look up an order. Set `http_tools` with
 `POST /v1/agents` or `PATCH /v1/agents/{agent_id}`; MCP `create_agent` and
-`update_agent` take `http_tools` too. A `PATCH` replaces the whole list.
-Hail signs each request like a webhook, with the agent's `http_tool_secret`.
-Store it: Hail returns it on the first save with HTTP tools and from
-`POST /v1/agents/{agent_id}/rotate-tool-secret`. Guide:
+`update_agent` take `http_tools` too. A `PATCH` that sends `http_tools`
+replaces the whole list. Hail signs each request like a webhook, with the
+agent's `http_tool_secret`. Hail returns it only once: on the first save with
+HTTP tools, and from `POST /v1/agents/{agent_id}/rotate-tool-secret`. Guide:
 https://hail.so/docs/agents#call-your-api-http-tools
 
 **Email replies:** connect an inbox to a Hail agent so it can read the email

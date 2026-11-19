@@ -49,8 +49,8 @@ and `event_types`. The catalog at `GET /v1/webhooks/event-types` lists supported
 names, including incoming messages and call outcomes.
 
 Subscribe to `call.summarized` to get a phone call's `transcript` and a short
-AI `summary`. Calls where no one spoke never get it: use `call.completed` or
-`call.failed`. Limits: https://hail.so/docs/webhooks#call-summarized
+AI `summary`. Some calls never get it, such as calls where no one spoke: use
+the other call events. Limits: https://hail.so/docs/webhooks#call-summarized
 
 Save the returned signing secret. Verify `X-Hail-Signature` against the raw
 request bytes, and deduplicate deliveries with `X-Hail-Delivery`. Hail retries
