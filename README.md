@@ -38,6 +38,8 @@ You can also connect your own application through signed webhooks. Configure
 subscriptions in the console or through the REST API: the current MCP catalog
 and the CLI have no webhook-management commands. After a phone call, the
 `call.summarized` webhook sends the transcript and a short AI summary.
+A Hail agent can also call your own HTTPS API during calls, texts, and email
+(HTTP tools).
 Explicit email inbox/domain creation uses the console or REST API; MCP can list
 identities and work with email. Use `route_email_domain` to connect an email
 inbox to an email-enabled Hail agent. Use the default member scope unless the

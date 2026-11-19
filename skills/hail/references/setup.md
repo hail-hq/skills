@@ -105,10 +105,16 @@ curl --fail-with-body -sS -X PATCH https://api.hail.so/v1/numbers/$NUMBER_ID \
 
 Route only the channels the number supports. Incoming call events include
 `call.received`, `call.answered`, and `call.completed`; failures have their own
-outcomes. For the transcript and a short summary of inbound and outbound phone
-calls, subscribe to `call.summarized`. Its limits are in
-[Receive events through webhooks](history-and-webhooks.md#receive-events-through-webhooks). Answered
-inbound minutes start at the same price as outbound minutes.
+outcomes. `call.summarized` sends the transcript and a short summary after a
+phone call. Answered inbound minutes start at the same price as outbound minutes.
+
+**Your own API (HTTP tools):** an agent can call the customer's HTTPS API during
+calls, texts, and email, for example to look up an order. Set `http_tools` with
+`POST /v1/agents` or `PATCH /v1/agents/{agent_id}`; MCP `create_agent` and
+`update_agent` take `http_tools` too. Hail signs each request like a webhook,
+with the agent's `http_tool_secret`. Hail returns that secret only on the first
+save with HTTP tools, so store it. Guide:
+https://hail.so/docs/agents#call-your-api-http-tools.
 
 **Email replies:** connect an inbox to a Hail agent so it can read the email
 thread and reply. Configure it through the console, MCP, REST API, or CLI:

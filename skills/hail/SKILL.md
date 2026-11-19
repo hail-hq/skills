@@ -2,7 +2,7 @@
 name: hail
 description: Connects assistants and apps to Hail for phone numbers in 120+ countries, email inboxes, inbound and outbound calls, SMS/texts, and email. Use when configuring Hail numbers or agents, completing carrier registrations, sending or receiving messages and calls, or reading Hail conversations and delivery events through MCP or the API.
 metadata:
-  version: "0.1.4"
+  version: "0.1.5"
   openclaw:
     primaryEnv: HAIL_API_KEY
 ---
