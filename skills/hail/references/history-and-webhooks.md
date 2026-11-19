@@ -20,16 +20,10 @@ curl --fail-with-body -sS https://api.hail.so/v1/emails/stats -H "authorization:
 curl --fail-with-body -sS "https://api.hail.so/v1/events?limit=50" -H "authorization: Bearer $HAIL_API_KEY"
 ```
 
-`GET /v1/calls/CALL_ID` returns the call's `transcript`, one item per spoken
-turn. Each turn has `role`, `text`, and `at` (when the turn started).
-`assistant` is the Hail agent. `user` is the person or answering machine on
-the call. The transcript grows while the call runs. Hail saves the last turns
-after the call ends. With a webhook, wait for `call.summarized` before you act
-on it. MCP has no webhooks, and some calls never get that event: then read the
-call again at least 10 seconds after it ends. Turns can still arrive late.
-Texts sent during the call are not in it. Lists return `transcript: null`;
-read one call to get it. `GET /v1/events?id=call:CALL_ID` also lists each
-turn as an event.
+`GET /v1/calls/CALL_ID` and MCP `get_call` return the call's `transcript`:
+one item per turn, with `role`, `text`, and `at`. For the last turns, read
+it at least 10 seconds after the call ends. Lists return `transcript: null`.
+`GET /v1/events?id=call:CALL_ID` also lists each turn.
 Plain-text email has delivery and bounce events, but no open or click tracking.
 
 Calls, SMS, emails, contacts, numbers, and events use cursor pagination. Read
@@ -54,17 +48,10 @@ Create a subscription with `POST /v1/webhooks`, supplying an HTTPS `target_url`
 and `event_types`. The catalog at `GET /v1/webhooks/event-types` lists supported
 names, including incoming messages and call outcomes.
 
-Subscribe to `call.summarized` to get a phone call's `transcript`, a short AI
-`summary`, and `duration_seconds`. It covers inbound and outbound calls and
-arrives at least 10 seconds after the call ends. Hail creates one event per call
-with at least one non-empty turn. Calls with no spoken turns (no answer, busy,
-failed, or only blank turns) never get `call.summarized`. For those, use
-`call.completed` or `call.failed`, or read `GET /v1/calls/CALL_ID`. Each
-subscription skips calls that ended before that subscription was created or
-last changed. A secret rotation counts as a change. So does a `PATCH` that
-sets a field to a value that is not null, even the same value. Hail skips a call
-whose event was not created within 24 hours of its end. `summary` and
-`duration_seconds` can be null.
+Subscribe to `call.summarized` to get a phone call's `transcript` and a short
+AI `summary`. Some calls never get it, such as calls where no one spoke: use
+`call.completed`, `call.no_answer`, `call.busy`, or `call.failed`.
+Limits: https://hail.so/docs/webhooks#call-summarized
 
 Save the returned signing secret. Verify `X-Hail-Signature` against the raw
 request bytes, and deduplicate deliveries with `X-Hail-Delivery`. Hail retries

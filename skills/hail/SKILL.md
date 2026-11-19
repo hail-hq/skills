@@ -2,7 +2,7 @@
 name: hail
 description: Connects assistants and apps to Hail for phone numbers in 120+ countries, email inboxes, inbound and outbound calls, SMS/texts, and email. Use when configuring Hail numbers or agents, completing carrier registrations, sending or receiving messages and calls, or reading Hail conversations and delivery events through MCP or the API.
 metadata:
-  version: "0.1.4"
+  version: "0.1.5"
   openclaw:
     primaryEnv: HAIL_API_KEY
 ---
@@ -86,7 +86,7 @@ Read only the guide needed for the user's task. These files ship with this skill
 
 | Task | Read before acting |
 | --- | --- |
-| Get a number or inbox, register US SMS, or connect a Hail agent | [Setup and routing](references/setup.md) |
+| Get a number or inbox, register US SMS, connect a Hail agent, or let it call your API | [Setup and routing](references/setup.md) |
 | Send calls, texts, or email; retry a send; attach a file | [Sending and safe retries](references/sending.md) |
 | Read history, contacts, transcripts, or delivery; build webhooks | [History and webhooks](references/history-and-webhooks.md) |
 | Recover from an API error, rate limit, or unknown send outcome | [Errors and limits](references/errors.md) |
